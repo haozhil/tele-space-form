@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Tele Space Service Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 80px;
+    }
+
+    .checkbox-group label {
+      font-weight: normal;
+    }
+
+    .checkbox-group input {
+      width: auto;
+      margin-right: 8px;
+    }
+
+    canvas {
+      border: 1px solid #999;
+      background: white;
+      width: 100%;
+      height: 180px;
+      touch-action: none;
+    }
+
+    button {
+      margin-top: 18px;
+      padding: 12px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      background: #111;
+      color: white;
+      border: none;
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .clear-btn {
+      background: #eee;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    #message {
+      margin-top: 16px;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <form id="serviceForm">
+    <h1>Tele Space Service Request Form</h1>
+
+    <label>Store</label>
+    <select name="store" required>
+      <option value="">Select store</option>
+      <option value="Flinders">Flinders</option>
+      <option value="Mirrabooka">Mirrabooka</option>
+      <option value="Ocean Keys">Ocean Keys</option>
+      <option value="Rockingham">Rockingham</option>
+    </select>
+
+    <label>Customer Name</label>
+    <input name="customerName" required />
+
+    <label>Contact Number</label>
+    <input name="contactNumber" required />
+
+    <label>Email</label>
+    <input name="email" type="email" required />
+
+    <label>Device Model / Colour</label>
+    <input name="deviceModel" required />
+
+    <label>IMEI or Serial Number</label>
+    <input name="imei" />
+
+    <label>Reported Faults</label>
+    <textarea name="reportedFaults" required></textarea>
+
+    <label>Passcode / PIN / Pattern</label>
+    <input name="passcode" />
+
+    <label>Quoted Price</label>
+    <input name="quotedPrice" />
+
+    <label>Deposit</label>
+    <input name="deposit" />
+
+    <label>Payment Method</label>
+    <select name="paymentMethod">
+      <option value="">Select payment method</option>
+      <option value="Cash">Cash</option>
+      <option value="EFTPOS">EFTPOS</option>
+      <option value="Bank Deposit">Bank Deposit</option>
+    </select>
+
+    <h3>Device Condition</h3>
+
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="heavyDamage" value="YES" /> Heavy damage</label>
+      <label><input type="checkbox" name="swollenBattery" value="YES" /> Swollen battery</label>
+      <label><input type="checkbox" name="waterDamage" value="YES" /> Water damage</label>
+      <label><input type="checkbox" name="frameBent" value="YES" /> Frame bent</label>
+      <label><input type="checkbox" name="scratchDent" value="YES" /> Scratch / Dent</label>
+      <label><input type="checkbox" name="repairHistory" value="YES" /> Repair history</label>
+    </div>
+
+    <h3>Warranty Acceptance & Key Terms</h3>
+
+    <p>
+      By submitting this form, the customer confirms that they have read,
+      understood, and accepted the Terms and Conditions, and authorises us to
+      proceed with the quoted repair.
+    </p>
+
+    <label>
+      <input type="checkbox" name="termsAccepted" value="YES" required />
+      I accept the Terms and Conditions.
+    </label>
+
+    <h3>Customer Signature</h3>
+    <canvas id="signaturePad"></canvas>
+    <button type="button" class="clear-btn" onclick="clearSignature()">Clear Signature</button>
+
+    <button type="submit" class="submit-btn">Submit Service Request</button>
+
+    <div id="message"></div>
+  </form>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiVlVhChtdTY_eDY9cohal1-R6QGfztBjHE8zF3yEd7HspscGwEffk_YwK7jRI8xWT/exec";
+
+    const canvas = document.getElementById("signaturePad");
+    const ctx = canvas.getContext("2d");
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      ctx.lineWidth = 2;
+      ctx.lineCap = "round";
+    }
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+
+    let drawing = false;
+
+    function getPosition(event) {
+      const rect = canvas.getBoundingClientRect();
+
+      if (event.touches && event.touches.length > 0) {
+        return {
+          x: event.touches[0].clientX - rect.left,
+          y: event.touches[0].clientY - rect.top
+        };
+      }
+
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function startDrawing(event) {
+      drawing = true;
+      const pos = getPosition(event);
+      ctx.beginPath();
+      ctx.moveTo(pos.x, pos.y);
+      event.preventDefault();
+    }
+
+    function draw(event) {
+      if (!drawing) return;
+
+      const pos = getPosition(event);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.stroke();
+      event.preventDefault();
+    }
+
+    function stopDrawing() {
+      drawing = false;
+    }
+
+    canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseleave", stopDrawing);
+
+    canvas.addEventListener("touchstart", startDrawing);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stopDrawing);
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    document.getElementById("serviceForm").addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+
+      const data = {
+        store: formData.get("store"),
+        customerName: formData.get("customerName"),
+        contactNumber: formData.get("contactNumber"),
+        email: formData.get("email"),
+        deviceModel: formData.get("deviceModel"),
+        imei: formData.get("imei"),
+        reportedFaults: formData.get("reportedFaults"),
+        passcode: formData.get("passcode"),
+        quotedPrice: formData.get("quotedPrice"),
+        deposit: formData.get("deposit"),
+        paymentMethod: formData.get("paymentMethod"),
+        heavyDamage: formData.get("heavyDamage") || "NO",
+        swollenBattery: formData.get("swollenBattery") || "NO",
+        waterDamage: formData.get("waterDamage") || "NO",
+        frameBent: formData.get("frameBent") || "NO",
+        scratchDent: formData.get("scratchDent") || "NO",
+        repairHistory: formData.get("repairHistory") || "NO",
+        termsAccepted: formData.get("termsAccepted") || "NO",
+        signature: canvas.toDataURL("image/png")
+      };
+
+      const message = document.getElementById("message");
+      message.textContent = "Submitting...";
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          message.textContent = "Submitted successfully. Job No: " + result.jobNo;
+          form.reset();
+          clearSignature();
+        } else {
+          message.textContent = "Submit failed. Please try again.";
+        }
+      } catch (error) {
+        console.error(error);
+        message.textContent = "Submit failed. Please check the connection.";
+      }
+    });
+  </script>
+</body>
+</html>

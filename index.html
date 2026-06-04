@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Tele Space Service Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tele Space Service Request Form</title>
   <style>
+    :root {
+      --ink: #151515;
+      --muted: #666;
+      --line: #d8d8d8;
+      --page: #f3f4f6;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px;
+      background: var(--page);
+      color: var(--ink);
       font-family: Arial, sans-serif;
-      max-width: 1100px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #f5f5f5;
-      color: #111;
     }
 
     form {
-      background: white;
       padding: 28px;
       border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
     }
 
-    h1 {
-      text-align: center;
-      margin: 0 0 24px;
-      letter-spacing: 1px;
-    }
-
-    h2 {
-      margin: 0 0 14px;
-      padding-bottom: 6px;
-      border-bottom: 2px solid #111;
-      font-size: 18px;
-    }
-
-    h3 {
-      margin: 24px 0 12px;
-    }
+    h1 { margin: 0 0 26px; text-align: center; }
+    h2 { margin: 0 0 16px; padding-bottom: 7px; border-bottom: 2px solid var(--ink); font-size: 19px; }
+    h3 { margin: 24px 0 12px; }
 
     .form-layout {
       display: grid;
@@ -42,43 +40,62 @@
       gap: 34px;
     }
 
-    .field {
-      margin-bottom: 14px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-    }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; margin-bottom: 6px; font-weight: bold; }
 
     .field input,
     .field select,
     .field textarea {
       width: 100%;
       padding: 10px;
-      box-sizing: border-box;
-      font-size: 16px;
       border: 1px solid #aaa;
       border-radius: 4px;
+      background: #fff;
+      font: inherit;
     }
 
-    textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
+    textarea { min-height: 90px; resize: vertical; }
+    .inline-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-    .inline-fields {
+    .check-type {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .check-type label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid #aaa;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .check-stage {
+      margin-top: 0;
+      padding: 12px;
+      border: 1px solid #aaa;
+      border-radius: 7px;
+      background: #fff;
+      font-weight: bold;
+    }
+
+    .check-stage.active {
+      border-color: #111;
+      background: #111;
+      color: #fff;
     }
 
     .function-grid,
     .condition-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0 22px;
+      gap: 0 20px;
     }
 
     .check-item,
@@ -88,166 +105,106 @@
       align-items: center;
       gap: 8px;
       padding: 8px 0;
-      font-weight: normal;
       cursor: pointer;
     }
 
-    .check-item {
-      border-bottom: 1px solid #ddd;
+    .check-item { border-bottom: 1px solid var(--line); }
+    .check-item input, .payment-option input, .acceptance input, .check-type input { width: 18px; height: 18px; margin: 0; }
+    .payment-options { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 16px; }
+
+    .function-grid .check-item input {
+      display: grid;
+      place-content: center;
+      appearance: none;
+      border: 1px solid #999;
+      border-radius: 3px;
+      background: #fff;
     }
 
-    .check-item input,
-    .payment-option input,
-    .acceptance input {
-      width: 18px;
-      height: 18px;
-      margin: 0;
-      flex: 0 0 auto;
+    .function-grid .check-item input::before {
+      content: "×";
+      color: #b42318;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1;
+      transform: scale(0);
     }
 
-    .payment-options {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 24px;
-      margin-bottom: 16px;
+    .function-grid .check-item input:checked::before { transform: scale(1); }
+    .function-grid .check-item:has(input:checked) { color: #b42318; font-weight: bold; }
+
+    .helper {
+      margin: -8px 0 14px;
+      color: var(--muted);
+      font-size: 14px;
     }
 
     .terms {
       margin-top: 28px;
       padding-top: 4px;
-      border-top: 2px solid #111;
+      border-top: 2px solid var(--ink);
       font-size: 14px;
       line-height: 1.45;
     }
 
-    .terms p {
-      margin: 10px 0;
-    }
-
     canvas {
-      border: 1px solid #999;
-      background: white;
       width: 100%;
       height: 180px;
+      border: 1px solid #999;
+      background: #fff;
       touch-action: none;
     }
 
     button {
       margin-top: 18px;
       padding: 12px 18px;
-      font-size: 16px;
+      border: 1px solid #bbb;
+      border-radius: 7px;
+      font: inherit;
       cursor: pointer;
     }
 
-    .submit-btn {
-      background: #111;
-      color: white;
-      border: none;
-      width: 100%;
-      border-radius: 8px;
-    }
-
-    .clear-btn {
-      background: #eee;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
+    button:disabled { cursor: wait; opacity: .55; }
+    .clear-btn { background: #eee; }
+    .submit-btn { width: 100%; border-color: #111; background: #111; color: #fff; }
 
     #message {
+      min-height: 22px;
       margin-top: 16px;
       font-weight: bold;
       text-align: center;
     }
 
+    #message.error { color: #b42318; }
+    #message.success { color: #167c3b; }
+
     @media (max-width: 800px) {
-      body {
-        margin: 0;
-        padding: 10px;
-      }
-
-      form {
-        padding: 18px;
-      }
-
-      .form-layout,
-      .inline-fields {
-        grid-template-columns: 1fr;
-        gap: 0;
-      }
-
-      .function-grid,
-      .condition-grid {
-        grid-template-columns: 1fr;
-      }
+      body { padding: 10px; }
+      form { padding: 18px; }
+      .form-layout, .inline-fields, .function-grid, .condition-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
   <form id="serviceForm">
-    <h1>SERVICE REQUEST FORM</h1>
+    <h1>TELE SPACE SERVICE REQUEST FORM</h1>
 
     <div class="form-layout">
       <section>
         <h2>Customer Details</h2>
-
-        <div class="field">
-          <label for="store">Store</label>
-          <select id="store" name="store" required>
-            <option value="">Select store</option>
-            <option value="Flinders">Flinders</option>
-            <option value="Mirrabooka">Mirrabooka</option>
-            <option value="Ocean Keys">Ocean Keys</option>
-            <option value="Rockingham">Rockingham</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="customerName">Name</label>
-          <input id="customerName" name="customerName" required />
-        </div>
-
-        <div class="field">
-          <label for="contactNumber">Contact Number</label>
-          <input id="contactNumber" name="contactNumber" required />
-        </div>
-
-        <div class="field">
-          <label for="email">E-mail Address</label>
-          <input id="email" name="email" type="email" required />
-        </div>
+        <div class="field"><label for="store">Store</label><select id="store" name="store" required><option value="">Select store</option><option>Flinders</option><option>Mirrabooka</option><option>Ocean Keys</option><option>Rockingham</option></select></div>
+        <div class="field"><label for="customerName">Name</label><input id="customerName" name="customerName" required /></div>
+        <div class="field"><label for="contactNumber">Contact Number</label><input id="contactNumber" name="contactNumber" required /></div>
+        <div class="field"><label for="email">E-mail Address</label><input id="email" name="email" type="email" required /></div>
 
         <h2>Device Info</h2>
-
-        <div class="field">
-          <label for="deviceModel">Model / Colour</label>
-          <input id="deviceModel" name="deviceModel" required />
-        </div>
-
-        <div class="field">
-          <label for="imei">IMEI or Serial Number</label>
-          <input id="imei" name="imei" />
-        </div>
-
-        <div class="field">
-          <label for="reportedFaults">Reported Faults</label>
-          <textarea id="reportedFaults" name="reportedFaults" required></textarea>
-        </div>
-
-        <div class="field">
-          <label for="passcode">Passcode / PIN / Pattern</label>
-          <input id="passcode" name="passcode" />
-        </div>
-
+        <div class="field"><label for="deviceModel">Model / Colour</label><input id="deviceModel" name="deviceModel" required /></div>
+        <div class="field"><label for="imei">IMEI or Serial Number</label><input id="imei" name="imei" /></div>
+        <div class="field"><label for="reportedFaults">Reported Faults</label><textarea id="reportedFaults" name="reportedFaults" required></textarea></div>
+        <div class="field"><label for="passcode">Passcode / PIN / Pattern</label><input id="passcode" name="passcode" /></div>
         <div class="inline-fields">
-          <div class="field">
-            <label for="quotedPrice">Quoted Price</label>
-            <input id="quotedPrice" name="quotedPrice" />
-          </div>
-          <div class="field">
-            <label for="deposit">Deposit</label>
-            <input id="deposit" name="deposit" />
-          </div>
+          <div class="field"><label for="quotedPrice">Quoted Price</label><input id="quotedPrice" name="quotedPrice" /></div>
+          <div class="field"><label for="deposit">Deposit</label><input id="deposit" name="deposit" /></div>
         </div>
 
         <h3>Payment Method</h3>
@@ -257,14 +214,17 @@
           <label class="payment-option"><input type="radio" name="paymentMethod" value="Bank Deposit" /> Bank Deposit</label>
         </div>
 
-        <div class="field">
-          <label for="notes">Notes</label>
-          <textarea id="notes" name="notes"></textarea>
-        </div>
+        <div class="field"><label for="notes">Notes</label><textarea id="notes" name="notes"></textarea></div>
       </section>
 
       <section>
         <h2>Function Checking</h2>
+        <div class="check-type">
+          <button class="check-stage active" data-stage="Pre" type="button">Pre Repair Issues</button>
+          <button class="check-stage" data-stage="Post" type="button">Post Repair Issues</button>
+        </div>
+        <p class="helper">Mark only functions with a problem. No marked items means no problems found for that stage.</p>
+
         <div class="function-grid">
           <label class="check-item"><input type="checkbox" name="functionCheck" value="LCD Display" /> LCD Display</label>
           <label class="check-item"><input type="checkbox" name="functionCheck" value="Touch / Face ID" /> Touch / Face ID</label>
@@ -314,114 +274,175 @@
 
     <section class="terms">
       <h2>Warranty Acceptance &amp; Key Terms</h2>
-      <p>
-        <strong>1. Acceptance:</strong> Proceeding with the repair confirms acceptance of our full Terms &amp;
-        Conditions. <strong>2. Data Responsibility:</strong> Customers must back up all data. We are not
-        responsible for data loss unless required by law. <strong>3. Device Condition:</strong> Pre-existing
-        faults or damage, including battery ageing or swelling, are not covered.
-        <strong>4. Repair Warranty:</strong> Parts repaired or replaced by us are covered by a three-month
-        warranty, limited to the specific parts repaired. This excludes physical or liquid damage, normal wear,
-        misuse, or third-party interference. <strong>5. Warranty Claims:</strong> Devices must be returned within
-        the warranty period with valid proof of purchase and matching IMEI or serial number. All claims are
-        subject to inspection and assessment. <strong>6. Fees &amp; Legal Rights:</strong> Fees are non-refundable
-        once services are provided. Repairs may affect manufacturer warranty or water resistance. Nothing limits
-        your rights under the Australian Consumer Law.
-      </p>
-      <p>
-        By signing below, the Customer confirms that they have read, understood, and accepted the Terms and
-        Conditions and authorises us to proceed with the quoted repair.
-      </p>
-      <label class="acceptance">
-      <input type="checkbox" name="termsAccepted" value="YES" required />
-      I accept the Terms and Conditions.
-      </label>
+      <p><strong>1. Acceptance:</strong> Proceeding with the repair confirms acceptance of our full Terms &amp; Conditions. <strong>2. Data Responsibility:</strong> Customers must back up all data. We are not responsible for data loss unless required by law. <strong>3. Device Condition:</strong> Pre-existing faults or damage, including battery ageing or swelling, are not covered. <strong>4. Repair Warranty:</strong> Parts repaired or replaced by us are covered by a three-month warranty, limited to the specific parts repaired. This excludes physical or liquid damage, normal wear, misuse, or third-party interference. <strong>5. Warranty Claims:</strong> Devices must be returned within the warranty period with valid proof of purchase and matching IMEI or serial number. All claims are subject to inspection and assessment. <strong>6. Fees &amp; Legal Rights:</strong> Fees are non-refundable once services are provided. Repairs may affect manufacturer warranty or water resistance. Nothing limits your rights under the Australian Consumer Law.</p>
+      <label class="acceptance"><input type="checkbox" name="termsAccepted" value="YES" required /> I have read, understood and accepted the Terms and Conditions and authorise the quoted repair.</label>
     </section>
 
     <h3>Customer Signature</h3>
     <canvas id="signaturePad"></canvas>
-    <button type="button" class="clear-btn" onclick="clearSignature()">Clear Signature</button>
-
-    <button type="submit" class="submit-btn">Submit Service Request</button>
-
+    <button class="clear-btn" type="button" id="clearSignature">Clear Signature</button>
+    <button class="submit-btn" type="submit">Submit Service Request</button>
     <div id="message"></div>
   </form>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxiVlVhChtdTY_eDY9cohal1-R6QGfztBjHE8zF3yEd7HspscGwEffk_YwK7jRI8xWT/exec";
-
     const canvas = document.getElementById("signaturePad");
-    const ctx = canvas.getContext("2d");
+    const context = canvas.getContext("2d");
+    const issueStates = { Pre: new Set(), Post: new Set() };
+    const functionCheckboxes = Array.from(document.querySelectorAll('input[name="functionCheck"]'));
+    let drawing = false;
+    let signed = false;
+    let activeCheckStage = "Pre";
 
-    function resizeCanvas() {
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
+    function updateStageLabels() {
+      document.querySelectorAll(".check-stage").forEach(function (button) {
+        button.textContent = `${button.dataset.stage} Repair Issues (${issueStates[button.dataset.stage].size})`;
+      });
     }
 
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
+    function showCheckStage(stage) {
+      activeCheckStage = stage;
+      updateStageLabels();
+      document.querySelectorAll(".check-stage").forEach(function (button) {
+        button.classList.toggle("active", button.dataset.stage === stage);
+      });
+      functionCheckboxes.forEach(function (checkbox) {
+        checkbox.checked = issueStates[stage].has(checkbox.value);
+      });
+    }
 
-    let drawing = false;
+    document.querySelectorAll(".check-stage").forEach(function (button) {
+      button.addEventListener("click", function () {
+        showCheckStage(button.dataset.stage);
+      });
+    });
 
-    function getPosition(event) {
-      const rect = canvas.getBoundingClientRect();
+    functionCheckboxes.forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+          issueStates[activeCheckStage].add(checkbox.value);
+        } else {
+          issueStates[activeCheckStage].delete(checkbox.value);
+        }
+        updateStageLabels();
+      });
+    });
 
-      if (event.touches && event.touches.length > 0) {
-        return {
-          x: event.touches[0].clientX - rect.left,
-          y: event.touches[0].clientY - rect.top
-        };
+    function resizeCanvas() {
+      const existing = signed ? canvas.toDataURL() : "";
+      canvas.width = canvas.getBoundingClientRect().width;
+      canvas.height = 180;
+      context.lineWidth = 2;
+      context.lineCap = "round";
+      if (existing) {
+        const image = new Image();
+        image.onload = function () { context.drawImage(image, 0, 0, canvas.width, canvas.height); };
+        image.src = existing;
       }
+    }
 
-      return {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
-      };
+    function position(event) {
+      const rect = canvas.getBoundingClientRect();
+      const point = event.touches && event.touches.length ? event.touches[0] : event;
+      return { x: point.clientX - rect.left, y: point.clientY - rect.top };
     }
 
     function startDrawing(event) {
       drawing = true;
-      const pos = getPosition(event);
-      ctx.beginPath();
-      ctx.moveTo(pos.x, pos.y);
+      signed = true;
+      const point = position(event);
+      context.beginPath();
+      context.moveTo(point.x, point.y);
       event.preventDefault();
     }
 
     function draw(event) {
       if (!drawing) return;
-
-      const pos = getPosition(event);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
+      const point = position(event);
+      context.lineTo(point.x, point.y);
+      context.stroke();
       event.preventDefault();
     }
 
-    function stopDrawing() {
-      drawing = false;
-    }
+    function stopDrawing() { drawing = false; }
 
     canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseleave", stopDrawing);
-
-    canvas.addEventListener("touchstart", startDrawing);
-    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchstart", startDrawing, { passive: false });
+    canvas.addEventListener("touchmove", draw, { passive: false });
     canvas.addEventListener("touchend", stopDrawing);
+    window.addEventListener("resize", resizeCanvas);
 
-    function clearSignature() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById("clearSignature").addEventListener("click", function () {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      signed = false;
+    });
+
+    updateStageLabels();
+
+    function postToScript(payload) {
+      return new Promise(function (resolve, reject) {
+        const requestId = crypto.randomUUID();
+        const iframe = document.createElement("iframe");
+        const hiddenForm = document.createElement("form");
+        const timeout = setTimeout(function () {
+          cleanup();
+          reject(new Error("The request timed out."));
+        }, 45000);
+
+        payload.requestId = requestId;
+        iframe.name = `submit_frame_${requestId}`;
+        iframe.style.display = "none";
+        hiddenForm.method = "POST";
+        hiddenForm.action = SCRIPT_URL;
+        hiddenForm.target = iframe.name;
+        hiddenForm.style.display = "none";
+
+        Object.entries(payload).forEach(function ([key, value]) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          hiddenForm.appendChild(input);
+        });
+
+        function cleanup() {
+          clearTimeout(timeout);
+          window.removeEventListener("message", handleMessage);
+          hiddenForm.remove();
+          iframe.remove();
+        }
+
+        function handleMessage(event) {
+          if (!event.data || event.data.requestId !== requestId) return;
+          cleanup();
+          event.data.ok ? resolve(event.data) : reject(new Error(event.data.error || "Apps Script returned an error."));
+        }
+
+        window.addEventListener("message", handleMessage);
+        document.body.appendChild(iframe);
+        document.body.appendChild(hiddenForm);
+        hiddenForm.submit();
+      });
     }
 
     document.getElementById("serviceForm").addEventListener("submit", async function (event) {
       event.preventDefault();
-
       const form = event.target;
+      const button = event.submitter;
+      const message = document.getElementById("message");
       const formData = new FormData(form);
 
-      const data = {
+      if (!signed) {
+        message.className = "error";
+        message.textContent = "Customer signature is required.";
+        return;
+      }
+
+      const payload = {
         store: formData.get("store"),
         customerName: formData.get("customerName"),
         contactNumber: formData.get("contactNumber"),
@@ -432,9 +453,10 @@
         passcode: formData.get("passcode"),
         quotedPrice: formData.get("quotedPrice"),
         deposit: formData.get("deposit"),
-        paymentMethod: formData.get("paymentMethod"),
+        paymentMethod: formData.get("paymentMethod") || "",
         notes: formData.get("notes"),
-        functionChecks: formData.getAll("functionCheck").join(", "),
+        preIssues: Array.from(issueStates.Pre).join(", "),
+        postIssues: Array.from(issueStates.Post).join(", "),
         heavyDamage: formData.get("heavyDamage") || "NO",
         swollenBattery: formData.get("swollenBattery") || "NO",
         waterDamage: formData.get("waterDamage") || "NO",
@@ -445,73 +467,29 @@
         signature: canvas.toDataURL("image/png")
       };
 
-      const message = document.getElementById("message");
-      const submitButton = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      message.className = "";
       message.textContent = "Submitting...";
-      submitButton.disabled = true;
 
       try {
-        const requestId = crypto.randomUUID();
-        data.requestId = requestId;
-
-        const result = await new Promise(function (resolve, reject) {
-          const iframe = document.createElement("iframe");
-          const hiddenForm = document.createElement("form");
-          const timeout = setTimeout(function () {
-            cleanup();
-            reject(new Error("The request timed out."));
-          }, 30000);
-
-          function cleanup() {
-            clearTimeout(timeout);
-            window.removeEventListener("message", handleMessage);
-            hiddenForm.remove();
-            iframe.remove();
-          }
-
-          function handleMessage(event) {
-            if (!event.data || event.data.requestId !== requestId) return;
-            cleanup();
-
-            if (event.data.ok) {
-              resolve(event.data);
-            } else {
-              reject(new Error(event.data.error || "Apps Script returned an error."));
-            }
-          }
-
-          iframe.name = `submit_frame_${requestId}`;
-          iframe.style.display = "none";
-
-          hiddenForm.method = "POST";
-          hiddenForm.action = SCRIPT_URL;
-          hiddenForm.target = iframe.name;
-          hiddenForm.style.display = "none";
-
-          Object.entries(data).forEach(function ([key, value]) {
-            const input = document.createElement("input");
-            input.type = "hidden";
-            input.name = key;
-            input.value = value;
-            hiddenForm.appendChild(input);
-          });
-
-          window.addEventListener("message", handleMessage);
-          document.body.appendChild(iframe);
-          document.body.appendChild(hiddenForm);
-          hiddenForm.submit();
-        });
-
+        const result = await postToScript(payload);
+        message.className = "success";
         message.textContent = `Submitted successfully. Job No: ${result.jobNo}`;
         form.reset();
-        clearSignature();
+        issueStates.Pre.clear();
+        issueStates.Post.clear();
+        showCheckStage("Pre");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        signed = false;
       } catch (error) {
-        console.error(error);
+        message.className = "error";
         message.textContent = `Submit failed: ${error.message}`;
       } finally {
-        submitButton.disabled = false;
+        button.disabled = false;
       }
     });
+
+    resizeCanvas();
   </script>
 </body>
 </html>

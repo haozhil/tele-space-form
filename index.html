@@ -6,47 +6,122 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
+      max-width: 1100px;
       margin: 20px auto;
       padding: 20px;
       background: #f5f5f5;
+      color: #111;
     }
 
     form {
       background: white;
-      padding: 24px;
+      padding: 28px;
       border-radius: 12px;
     }
 
     h1 {
       text-align: center;
+      margin: 0 0 24px;
+      letter-spacing: 1px;
     }
 
-    label {
+    h2 {
+      margin: 0 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #111;
+      font-size: 18px;
+    }
+
+    h3 {
+      margin: 24px 0 12px;
+    }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 34px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
       display: block;
-      margin-top: 14px;
+      margin-bottom: 6px;
       font-weight: bold;
     }
 
-    input, select, textarea {
+    .field input,
+    .field select,
+    .field textarea {
       width: 100%;
       padding: 10px;
-      margin-top: 6px;
       box-sizing: border-box;
       font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
     }
 
     textarea {
-      min-height: 80px;
+      min-height: 90px;
+      resize: vertical;
     }
 
-    .checkbox-group label {
+    .inline-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .function-grid,
+    .condition-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 22px;
+    }
+
+    .check-item,
+    .payment-option,
+    .acceptance {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
       font-weight: normal;
+      cursor: pointer;
     }
 
-    .checkbox-group input {
-      width: auto;
-      margin-right: 8px;
+    .check-item {
+      border-bottom: 1px solid #ddd;
+    }
+
+    .check-item input,
+    .payment-option input,
+    .acceptance input {
+      width: 18px;
+      height: 18px;
+      margin: 0;
+      flex: 0 0 auto;
+    }
+
+    .payment-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      margin-bottom: 16px;
+    }
+
+    .terms {
+      margin-top: 28px;
+      padding-top: 4px;
+      border-top: 2px solid #111;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .terms p {
+      margin: 10px 0;
     }
 
     canvas {
@@ -83,80 +158,184 @@
       font-weight: bold;
       text-align: center;
     }
+
+    @media (max-width: 800px) {
+      body {
+        margin: 0;
+        padding: 10px;
+      }
+
+      form {
+        padding: 18px;
+      }
+
+      .form-layout,
+      .inline-fields {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .function-grid,
+      .condition-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 
 <body>
   <form id="serviceForm">
-    <h1>Tele Space Service Request Form</h1>
+    <h1>SERVICE REQUEST FORM</h1>
 
-    <label>Store</label>
-    <select name="store" required>
-      <option value="">Select store</option>
-      <option value="Flinders">Flinders</option>
-      <option value="Mirrabooka">Mirrabooka</option>
-      <option value="Ocean Keys">Ocean Keys</option>
-      <option value="Rockingham">Rockingham</option>
-    </select>
+    <div class="form-layout">
+      <section>
+        <h2>Customer Details</h2>
 
-    <label>Customer Name</label>
-    <input name="customerName" required />
+        <div class="field">
+          <label for="store">Store</label>
+          <select id="store" name="store" required>
+            <option value="">Select store</option>
+            <option value="Flinders">Flinders</option>
+            <option value="Mirrabooka">Mirrabooka</option>
+            <option value="Ocean Keys">Ocean Keys</option>
+            <option value="Rockingham">Rockingham</option>
+          </select>
+        </div>
 
-    <label>Contact Number</label>
-    <input name="contactNumber" required />
+        <div class="field">
+          <label for="customerName">Name</label>
+          <input id="customerName" name="customerName" required />
+        </div>
 
-    <label>Email</label>
-    <input name="email" type="email" required />
+        <div class="field">
+          <label for="contactNumber">Contact Number</label>
+          <input id="contactNumber" name="contactNumber" required />
+        </div>
 
-    <label>Device Model / Colour</label>
-    <input name="deviceModel" required />
+        <div class="field">
+          <label for="email">E-mail Address</label>
+          <input id="email" name="email" type="email" required />
+        </div>
 
-    <label>IMEI or Serial Number</label>
-    <input name="imei" />
+        <h2>Device Info</h2>
 
-    <label>Reported Faults</label>
-    <textarea name="reportedFaults" required></textarea>
+        <div class="field">
+          <label for="deviceModel">Model / Colour</label>
+          <input id="deviceModel" name="deviceModel" required />
+        </div>
 
-    <label>Passcode / PIN / Pattern</label>
-    <input name="passcode" />
+        <div class="field">
+          <label for="imei">IMEI or Serial Number</label>
+          <input id="imei" name="imei" />
+        </div>
 
-    <label>Quoted Price</label>
-    <input name="quotedPrice" />
+        <div class="field">
+          <label for="reportedFaults">Reported Faults</label>
+          <textarea id="reportedFaults" name="reportedFaults" required></textarea>
+        </div>
 
-    <label>Deposit</label>
-    <input name="deposit" />
+        <div class="field">
+          <label for="passcode">Passcode / PIN / Pattern</label>
+          <input id="passcode" name="passcode" />
+        </div>
 
-    <label>Payment Method</label>
-    <select name="paymentMethod">
-      <option value="">Select payment method</option>
-      <option value="Cash">Cash</option>
-      <option value="EFTPOS">EFTPOS</option>
-      <option value="Bank Deposit">Bank Deposit</option>
-    </select>
+        <div class="inline-fields">
+          <div class="field">
+            <label for="quotedPrice">Quoted Price</label>
+            <input id="quotedPrice" name="quotedPrice" />
+          </div>
+          <div class="field">
+            <label for="deposit">Deposit</label>
+            <input id="deposit" name="deposit" />
+          </div>
+        </div>
 
-    <h3>Device Condition</h3>
+        <h3>Payment Method</h3>
+        <div class="payment-options">
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="Cash" /> Cash</label>
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="EFTPOS" /> EFTPOS</label>
+          <label class="payment-option"><input type="radio" name="paymentMethod" value="Bank Deposit" /> Bank Deposit</label>
+        </div>
 
-    <div class="checkbox-group">
-      <label><input type="checkbox" name="heavyDamage" value="YES" /> Heavy damage</label>
-      <label><input type="checkbox" name="swollenBattery" value="YES" /> Swollen battery</label>
-      <label><input type="checkbox" name="waterDamage" value="YES" /> Water damage</label>
-      <label><input type="checkbox" name="frameBent" value="YES" /> Frame bent</label>
-      <label><input type="checkbox" name="scratchDent" value="YES" /> Scratch / Dent</label>
-      <label><input type="checkbox" name="repairHistory" value="YES" /> Repair history</label>
+        <div class="field">
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes"></textarea>
+        </div>
+      </section>
+
+      <section>
+        <h2>Function Checking</h2>
+        <div class="function-grid">
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="LCD Display" /> LCD Display</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Touch / Face ID" /> Touch / Face ID</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Digitizer" /> Digitizer</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Loud Speaker" /> Loud Speaker</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Power Button" /> Power Button</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Ear Speaker" /> Ear Speaker</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Action Button" /> Action Button</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Front Camera" /> Front Camera</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Volume Button" /> Volume Button</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Rear Camera" /> Rear Camera</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Home Button" /> Home Button</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Battery Health" /> Battery Health</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Mute Button" /> Mute Button</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Compass" /> Compass</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Microphone" /> Microphone</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Signal" /> Signal</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Light Sensor" /> Light Sensor</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Wi-Fi" /> Wi-Fi</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Headphone" /> Headphone</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Bluetooth" /> Bluetooth</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Back Glass / Lens" /> Back Glass / Lens</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="GPS" /> GPS</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="S Pen" /> S Pen</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="NFC" /> NFC</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="SIM Card" /> SIM Card</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Notification" /> Notification</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="SIM Tray" /> SIM Tray</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Vibration" /> Vibration</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Charging Port" /> Charging Port</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Wireless Charger" /> Wireless Charger</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Flash" /> Flash</label>
+          <label class="check-item"><input type="checkbox" name="functionCheck" value="Voice Memos" /> Voice Memos</label>
+        </div>
+
+        <h2>Device Condition</h2>
+        <div class="condition-grid">
+          <label class="check-item"><input type="checkbox" name="heavyDamage" value="YES" /> Heavy damage</label>
+          <label class="check-item"><input type="checkbox" name="swollenBattery" value="YES" /> Swollen battery</label>
+          <label class="check-item"><input type="checkbox" name="waterDamage" value="YES" /> Water damage</label>
+          <label class="check-item"><input type="checkbox" name="frameBent" value="YES" /> Frame bent</label>
+          <label class="check-item"><input type="checkbox" name="scratchDent" value="YES" /> Scratch / Dent</label>
+          <label class="check-item"><input type="checkbox" name="repairHistory" value="YES" /> Repair history</label>
+        </div>
+      </section>
     </div>
 
-    <h3>Warranty Acceptance & Key Terms</h3>
-
-    <p>
-      By submitting this form, the customer confirms that they have read,
-      understood, and accepted the Terms and Conditions, and authorises us to
-      proceed with the quoted repair.
-    </p>
-
-    <label>
+    <section class="terms">
+      <h2>Warranty Acceptance &amp; Key Terms</h2>
+      <p>
+        <strong>1. Acceptance:</strong> Proceeding with the repair confirms acceptance of our full Terms &amp;
+        Conditions. <strong>2. Data Responsibility:</strong> Customers must back up all data. We are not
+        responsible for data loss unless required by law. <strong>3. Device Condition:</strong> Pre-existing
+        faults or damage, including battery ageing or swelling, are not covered.
+        <strong>4. Repair Warranty:</strong> Parts repaired or replaced by us are covered by a three-month
+        warranty, limited to the specific parts repaired. This excludes physical or liquid damage, normal wear,
+        misuse, or third-party interference. <strong>5. Warranty Claims:</strong> Devices must be returned within
+        the warranty period with valid proof of purchase and matching IMEI or serial number. All claims are
+        subject to inspection and assessment. <strong>6. Fees &amp; Legal Rights:</strong> Fees are non-refundable
+        once services are provided. Repairs may affect manufacturer warranty or water resistance. Nothing limits
+        your rights under the Australian Consumer Law.
+      </p>
+      <p>
+        By signing below, the Customer confirms that they have read, understood, and accepted the Terms and
+        Conditions and authorises us to proceed with the quoted repair.
+      </p>
+      <label class="acceptance">
       <input type="checkbox" name="termsAccepted" value="YES" required />
       I accept the Terms and Conditions.
-    </label>
+      </label>
+    </section>
 
     <h3>Customer Signature</h3>
     <canvas id="signaturePad"></canvas>
@@ -254,6 +433,8 @@
         quotedPrice: formData.get("quotedPrice"),
         deposit: formData.get("deposit"),
         paymentMethod: formData.get("paymentMethod"),
+        notes: formData.get("notes"),
+        functionChecks: formData.getAll("functionCheck").join(", "),
         heavyDamage: formData.get("heavyDamage") || "NO",
         swollenBattery: formData.get("swollenBattery") || "NO",
         waterDamage: formData.get("waterDamage") || "NO",

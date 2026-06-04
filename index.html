@@ -265,45 +265,71 @@
       };
 
       const message = document.getElementById("message");
+      const submitButton = form.querySelector('button[type="submit"]');
       message.textContent = "Submitting...";
+      submitButton.disabled = true;
 
-try {
-  const hiddenForm = document.createElement("form");
-  hiddenForm.method = "POST";
-  hiddenForm.action = SCRIPT_URL;
-  hiddenForm.target = "hidden_iframe";
-  hiddenForm.style.display = "none";
+      try {
+        const requestId = crypto.randomUUID();
+        data.requestId = requestId;
 
-  Object.keys(data).forEach(function (key) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = key;
-    input.value = data[key];
-    hiddenForm.appendChild(input);
-  });
+        const result = await new Promise(function (resolve, reject) {
+          const iframe = document.createElement("iframe");
+          const hiddenForm = document.createElement("form");
+          const timeout = setTimeout(function () {
+            cleanup();
+            reject(new Error("The request timed out."));
+          }, 30000);
 
-  let iframe = document.getElementById("hidden_iframe");
+          function cleanup() {
+            clearTimeout(timeout);
+            window.removeEventListener("message", handleMessage);
+            hiddenForm.remove();
+            iframe.remove();
+          }
 
-  if (!iframe) {
-    iframe = document.createElement("iframe");
-    iframe.name = "hidden_iframe";
-    iframe.id = "hidden_iframe";
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-  }
+          function handleMessage(event) {
+            if (!event.data || event.data.requestId !== requestId) return;
+            cleanup();
 
-  document.body.appendChild(hiddenForm);
-  hiddenForm.submit();
-  document.body.removeChild(hiddenForm);
+            if (event.data.ok) {
+              resolve(event.data);
+            } else {
+              reject(new Error(event.data.error || "Apps Script returned an error."));
+            }
+          }
 
-  message.textContent = "Submitted successfully. Please check Google Sheet.";
-  form.reset();
-  clearSignature();
+          iframe.name = `submit_frame_${requestId}`;
+          iframe.style.display = "none";
 
-} catch (error) {
-  console.error(error);
-  message.textContent = "Submit failed. Please check the connection.";
-}
+          hiddenForm.method = "POST";
+          hiddenForm.action = SCRIPT_URL;
+          hiddenForm.target = iframe.name;
+          hiddenForm.style.display = "none";
+
+          Object.entries(data).forEach(function ([key, value]) {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = key;
+            input.value = value;
+            hiddenForm.appendChild(input);
+          });
+
+          window.addEventListener("message", handleMessage);
+          document.body.appendChild(iframe);
+          document.body.appendChild(hiddenForm);
+          hiddenForm.submit();
+        });
+
+        message.textContent = `Submitted successfully. Job No: ${result.jobNo}`;
+        form.reset();
+        clearSignature();
+      } catch (error) {
+        console.error(error);
+        message.textContent = `Submit failed: ${error.message}`;
+      } finally {
+        submitButton.disabled = false;
+      }
     });
   </script>
 </body>

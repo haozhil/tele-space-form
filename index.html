@@ -7,9 +7,14 @@
   <style>
     :root {
       --ink: #151515;
-      --muted: #666;
-      --line: #d8d8d8;
-      --page: #f3f4f6;
+      --muted: #6b7280;
+      --line: #e5e7eb;
+      --page: #f6f7f9;
+      --surface: #fff;
+      --soft: #fafafa;
+      --brand-red: #d71920;
+      --brand-red-dark: #b90f16;
+      --focus: rgb(215 25 32 / 18%);
     }
 
     * { box-sizing: border-box; }
@@ -17,22 +22,67 @@
     body {
       max-width: 1120px;
       margin: 0 auto;
-      padding: 24px;
+      padding: 28px 24px;
       background: var(--page);
       color: var(--ink);
       font-family: Arial, sans-serif;
+      line-height: 1.35;
     }
 
     form {
-      padding: 28px;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 2px 12px rgb(0 0 0 / 8%);
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--surface);
+      box-shadow: 0 12px 32px rgb(15 23 42 / 6%);
     }
 
-    h1 { margin: 0 0 26px; text-align: center; }
-    h2 { margin: 0 0 16px; padding-bottom: 7px; border-bottom: 2px solid var(--ink); font-size: 19px; }
-    h3 { margin: 24px 0 12px; }
+    .form-header {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr) 120px;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 30px;
+      padding-bottom: 18px;
+      border-bottom: 3px solid var(--brand-red);
+    }
+
+    .brand-logo {
+      display: block;
+      width: 120px;
+      max-width: 100%;
+      height: auto;
+    }
+
+    h1 {
+      margin: 0;
+      color: #111827;
+      font-size: 26px;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      color: #111827;
+      font-size: 18px;
+      line-height: 1.2;
+      position: relative;
+    }
+
+    h2::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 54px;
+      height: 2px;
+      background: var(--brand-red);
+    }
+
+    h3 { margin: 24px 0 12px; font-size: 16px; }
 
     .form-layout {
       display: grid;
@@ -40,18 +90,28 @@
       gap: 34px;
     }
 
-    .field { margin-bottom: 14px; }
-    .field label { display: block; margin-bottom: 6px; font-weight: bold; }
+    .field { margin-bottom: 15px; }
+    .field label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; }
 
     .field input,
     .field select,
     .field textarea {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #aaa;
-      border-radius: 4px;
-      background: #fff;
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 1px solid #cfd4dc;
+      border-radius: 6px;
+      background: var(--surface);
       font: inherit;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 3px var(--focus);
+      outline: none;
     }
 
     textarea { min-height: 90px; resize: vertical; }
@@ -60,7 +120,7 @@
     .check-type {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
       margin-bottom: 18px;
     }
 
@@ -79,16 +139,24 @@
     .check-stage {
       margin-top: 0;
       padding: 12px;
-      border: 1px solid #aaa;
-      border-radius: 7px;
-      background: #fff;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      background: var(--soft);
+      color: #111827;
       font-weight: bold;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease, color .16s ease;
     }
 
     .check-stage.active {
-      border-color: #111;
-      background: #111;
+      border-color: var(--brand-red);
+      background: var(--brand-red);
       color: #fff;
+      box-shadow: 0 8px 18px rgb(215 25 32 / 20%);
+    }
+
+    .check-stage:not(.active):hover {
+      border-color: var(--brand-red);
+      color: var(--brand-red);
     }
 
     .function-grid,
@@ -109,21 +177,21 @@
     }
 
     .check-item { border-bottom: 1px solid var(--line); }
-    .check-item input, .payment-option input, .acceptance input, .check-type input { width: 18px; height: 18px; margin: 0; }
+    .check-item input, .payment-option input, .acceptance input, .check-type input { width: 18px; height: 18px; margin: 0; accent-color: var(--brand-red); }
     .payment-options { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 16px; }
 
     .function-grid .check-item input {
       display: grid;
       place-content: center;
       appearance: none;
-      border: 1px solid #999;
+      border: 1px solid #c5cad3;
       border-radius: 3px;
-      background: #fff;
+      background: var(--surface);
     }
 
     .function-grid .check-item input::before {
       content: "×";
-      color: #b42318;
+      color: var(--brand-red);
       font-size: 22px;
       font-weight: bold;
       line-height: 1;
@@ -131,7 +199,7 @@
     }
 
     .function-grid .check-item input:checked::before { transform: scale(1); }
-    .function-grid .check-item:has(input:checked) { color: #b42318; font-weight: bold; }
+    .function-grid .check-item:has(input:checked) { color: var(--brand-red); font-weight: bold; }
 
     .helper {
       margin: -8px 0 14px;
@@ -141,16 +209,23 @@
 
     .terms {
       margin-top: 28px;
-      padding-top: 4px;
-      border-top: 2px solid var(--ink);
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--brand-red);
+      border-radius: 8px;
+      background: var(--soft);
       font-size: 14px;
       line-height: 1.45;
     }
 
+    .terms h2 { margin-bottom: 12px; }
+    .terms p { margin: 0 0 12px; color: #374151; }
+
     canvas {
       width: 100%;
       height: 180px;
-      border: 1px solid #999;
+      border: 1px dashed #9ca3af;
+      border-radius: 8px;
       background: #fff;
       touch-action: none;
     }
@@ -158,15 +233,31 @@
     button {
       margin-top: 18px;
       padding: 12px 18px;
-      border: 1px solid #bbb;
-      border-radius: 7px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
       font: inherit;
       cursor: pointer;
+      transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease, color .16s ease, transform .16s ease;
     }
 
     button:disabled { cursor: wait; opacity: .55; }
-    .clear-btn { background: #eee; }
-    .submit-btn { width: 100%; border-color: #111; background: #111; color: #fff; }
+    button:focus-visible {
+      border-color: var(--brand-red);
+      box-shadow: 0 0 0 3px var(--focus);
+      outline: none;
+    }
+    button:not(:disabled):active { transform: translateY(1px); }
+    .clear-btn { background: #f3f4f6; color: #374151; }
+    .clear-btn:not(:disabled):hover { border-color: #9ca3af; background: #e5e7eb; }
+    .submit-btn {
+      width: 100%;
+      border-color: var(--brand-red);
+      background: var(--brand-red);
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 10px 22px rgb(215 25 32 / 20%);
+    }
+    .submit-btn:not(:disabled):hover { border-color: var(--brand-red-dark); background: var(--brand-red-dark); }
 
     #message {
       min-height: 22px;
@@ -175,19 +266,28 @@
       text-align: center;
     }
 
-    #message.error { color: #b42318; }
+    #message.error { color: var(--brand-red); }
     #message.success { color: #167c3b; }
 
     @media (max-width: 800px) {
       body { padding: 10px; }
       form { padding: 18px; }
+      .form-header {
+        grid-template-columns: 78px minmax(0, 1fr);
+        gap: 12px;
+      }
+      .brand-logo { width: 78px; }
+      h1 { font-size: 22px; text-align: left; }
       .form-layout, .inline-fields, .function-grid, .condition-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <form id="serviceForm">
-    <h1>TELE SPACE SERVICE REQUEST FORM</h1>
+    <div class="form-header">
+      <img class="brand-logo" src="logo.png" alt="Tele Space logo" />
+      <h1>TELE SPACE SERVICE REQUEST FORM</h1>
+    </div>
 
     <div class="form-layout">
       <section>
